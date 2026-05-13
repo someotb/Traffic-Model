@@ -1,4 +1,5 @@
 #include "common.hpp"
+#include "traffic_models.hpp"
 
 #include <sstream>
 #include <stdexcept>
@@ -16,10 +17,10 @@ launch_options opts_parser(int argc, char *argv[])
         throw std::invalid_argument("Failed to execute program, e.g ./main 'inputfile.*'");
 
     std::vector<std::string> args(argv, argv + argc);
-    std::fstream config_file("../" + args[1]);
+    std::fstream config_file("../data/" + args[1]);
 
     if (!config_file.is_open())
-        throw std::invalid_argument("Failed to open file");
+        throw std::invalid_argument("Failed to open config file");
 
     std::getline(config_file, config);
     l_o.sim_time = std::stof(config);
@@ -35,7 +36,44 @@ launch_options opts_parser(int argc, char *argv[])
     else
         throw std::invalid_argument("Invalid type of model. Use uniform or poissonian");
 
-    iss >> l_o.packet_size >> l_o.packet_interval;
+    iss >> l_o.packet_interval >> l_o.packet_size;
 
     return l_o;
+}
+
+void simulate(const launch_options &lo)
+{
+    float sim_time = lo.sim_time * 1000; // Считаем что интервал между пакетами в мкс.
+    float cur_time = 0.0f;
+    std::ofstream output("../data/data.csv", std::ios::trunc);
+
+    if (!output.is_open())
+        throw std::invalid_argument("Failed to open output file");
+
+    if (lo.type_of_model == ModelType::poissonian)
+    {
+        output << "poissonian\n";
+        Poissonian_traffic_model ptm(lo.packet_size, lo.packet_interval);
+        while (true)
+        {
+            int pi = ptm.generate_interval();
+            int ps = std::min(1500, std::max(1, static_cast<int>(ptm.generate_packet_size())));
+            cur_time += pi;
+            if (cur_time >= sim_time) break;
+            output << cur_time << "," << ps << "\n";
+        }
+    }
+    else if (lo.type_of_model == ModelType::unfiform)
+    {
+        output << "unfiform\n";
+        Uniform_traffic_model utm(lo.packet_size, lo.packet_interval);
+        while (true)
+        {
+            int ps = utm.get_packet_length();
+            int pi = utm.get_packet_interval();
+            cur_time += pi;
+            if (cur_time >= sim_time) break;
+            output << cur_time << "," << ps << "\n";
+        }
+    }
 }

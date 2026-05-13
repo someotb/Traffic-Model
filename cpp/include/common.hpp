@@ -12,7 +12,6 @@ struct launch_options
     ModelType type_of_model;
     int packet_size;
     int packet_interval;
-    float bitrate;
 };
 
 launch_options opts_parser(int argc, char *argv[]);

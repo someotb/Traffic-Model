@@ -1,2 +1,2 @@
-1800.0
-poissonian 20 512
+3200.0
+poissonian 10 512

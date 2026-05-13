@@ -23,7 +23,11 @@ launch_options opts_parser(int argc, char *argv[])
         throw std::invalid_argument("Failed to open config file");
 
     std::getline(config_file, config);
-    l_o.sim_time = std::stof(config);
+    float st = std::stof(config);
+    if (st >= 50.0f && st <= 3600.0f)
+        l_o.sim_time = st;
+    else
+        throw std::invalid_argument("50.0 <= Simulation time <= 3600.0");
 
     std::getline(config_file, config);
     std::istringstream iss(config);
@@ -57,7 +61,7 @@ void simulate(const launch_options &lo)
         while (true)
         {
             int pi = ptm.generate_interval();
-            int ps = std::min(1500, std::max(1, static_cast<int>(ptm.generate_packet_size())));
+            int ps = std::max(1, static_cast<int>(ptm.generate_packet_size()));
             cur_time += pi;
             if (cur_time >= sim_time) break;
             output << cur_time << "," << ps << "\n";

@@ -17,7 +17,7 @@ launch_options opts_parser(int argc, char *argv[])
         throw std::invalid_argument("Failed to execute program, e.g ./main 'inputfile.*'");
 
     std::vector<std::string> args(argv, argv + argc);
-    std::fstream config_file("../data/" + args[1]);
+    std::fstream config_file("../../data/" + args[1]);
 
     if (!config_file.is_open())
         throw std::invalid_argument("Failed to open config file");
@@ -45,7 +45,7 @@ void simulate(const launch_options &lo)
 {
     float sim_time = lo.sim_time * 1000; // Считаем что интервал между пакетами в мкс.
     float cur_time = 0.0f;
-    std::ofstream output("../data/data.csv", std::ios::trunc);
+    std::ofstream output("../../data/data.csv", std::ios::trunc);
 
     if (!output.is_open())
         throw std::invalid_argument("Failed to open output file");

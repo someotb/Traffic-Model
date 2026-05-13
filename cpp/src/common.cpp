@@ -24,10 +24,10 @@ launch_options opts_parser(int argc, char *argv[])
 
     std::getline(config_file, config);
     float st = std::stof(config);
-    if (st >= 50.0f && st <= 3600.0f)
+    if (st > 0.0f && st <= 3600.0f)
         l_o.sim_time = st;
     else
-        throw std::invalid_argument("50.0 <= Simulation time <= 3600.0");
+        throw std::invalid_argument("0.0 < Simulation time <= 3600.0");
 
     std::getline(config_file, config);
     std::istringstream iss(config);

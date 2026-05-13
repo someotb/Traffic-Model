@@ -27,15 +27,18 @@ print(f"Средний размер пакета: {mean_packet_size:0.4f} бай
 print(f"Средний размер интервала между пакетами: {mean_packet_inte:0.4f} мс")
 print(f"Средний битрейт: {mean_bitrate:0.2f} кбит/с")
 
+min_t, max_t = time_list.min(), time_list.max()
+bins = np.arange(min_t, max_t + 2) - 0.5
+
 plt.figure(figsize=(12, 6), label=f"Распределение {modelType}")
 plt.title("Гистрограмма задержек между пакетами")
-plt.hist([t / 1000 for t in time_list], bins=100)
+plt.hist(time_list, bins=bins)
 plt.xlabel("Время(с)")
 plt.ylabel("Кол-во пакетов")
 
 plt.figure(figsize=(12, 6), label=f"Распределение {modelType}")
 plt.title("Гистрограмма размера пакетов")
-plt.hist(size, bins=100)
+plt.hist(size, bins=50)
 plt.xlabel("Размер пакета(байт)")
 plt.ylabel("Кол-во пакетов")
 

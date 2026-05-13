@@ -41,13 +41,15 @@ launch_options opts_parser(int argc, char *argv[])
         throw std::invalid_argument("Invalid type of model. Use uniform or poissonian");
 
     iss >> l_o.packet_interval >> l_o.packet_size;
+    if (iss.fail() || l_o.packet_interval <= 0 || l_o.packet_size <= 0)
+         throw std::invalid_argument("Invalid model parameters. Expected: <model_type> <interval> <size>");
 
     return l_o;
 }
 
 void simulate(const launch_options &lo)
 {
-    float sim_time = lo.sim_time * 1000; // Считаем что интервал между пакетами в мкс.
+    float sim_time = lo.sim_time * 1000; // Считаем что интервал между пакетами в мс.
     float cur_time = 0.0f;
     std::ofstream output("../../data/data.csv", std::ios::trunc);
 
